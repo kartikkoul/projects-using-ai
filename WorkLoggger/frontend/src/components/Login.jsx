@@ -1,39 +1,30 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { login } from '../redux/authSlice';
+import { loginUser } from '../redux/slices/authSlice';
 import ErrorMessage from './ErrorMessage';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const { loading, error } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setCredentials({
+      ...credentials,
       [e.target.name]: e.target.value
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setIsLoading(true);
-
     try {
-      await dispatch(login(formData)).unwrap();
-      navigate('/');
+      await dispatch(loginUser(credentials)).unwrap();
+      // Navigation will be handled by the protected route
     } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
+      console.error('Login failed:', err);
     }
   };
 
@@ -156,10 +147,10 @@ const Login = () => {
               type="email"
               name="email"
               placeholder="Email Address"
-              value={formData.email}
+              value={credentials.email}
               onChange={handleChange}
               required
-              disabled={isLoading}
+              disabled={loading}
               className="slide-up"
             />
           </motion.div>
@@ -169,10 +160,10 @@ const Login = () => {
               type="password"
               name="password"
               placeholder="Password"
-              value={formData.password}
+              value={credentials.password}
               onChange={handleChange}
               required
-              disabled={isLoading}
+              disabled={loading}
               className="slide-up"
             />
           </motion.div>
@@ -180,11 +171,11 @@ const Login = () => {
           <motion.button
             className="login-button"
             type="submit"
-            disabled={isLoading}
+            disabled={loading}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
           >
-            {isLoading ? (
+            {loading ? (
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

@@ -1,0 +1,69 @@
+@keyframes gradientShift {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes sphereFloat {
+  0% { 
+    transform: translate(-30%, -30%) rotate(45deg); 
+    opacity: 0.3;
+  }
+  100% { 
+    transform: translate(30%, 30%) rotate(225deg); 
+    opacity: 0.6;
+  }
+}
+
+@keyframes sphereFloat2 {
+  0% { 
+    transform: translate(30%, 30%) rotate(45deg); 
+    opacity: 0.2;
+  }
+  100% { 
+    transform: translate(-30%, -30%) rotate(-135deg); 
+    opacity: 0.4;
+  }
+}
+
+@keyframes waveRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

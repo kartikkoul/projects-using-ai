@@ -1,0 +1,21 @@
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --danger-color: #ef4444;
+  --danger-hover: rgba(239, 68, 68, 0.1);
+  
+  --sidebar-bg: #1a1f38;
+  --content-bg: #f8fafc;
+  --card-bg: #ffffff;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --border-color: rgba(255, 255, 255, 0.1);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  
+  --text-gradient: linear-gradient(to right, #ffffff, #94a3b8);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}

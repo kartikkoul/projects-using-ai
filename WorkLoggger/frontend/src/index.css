@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
 * {
   margin: 0;
   padding: 0;
@@ -5,12 +10,64 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f6fa;
+  @apply bg-gray-50;
 }
 
 input, button {
   font-family: inherit;
+}
+
+.sidebar-container {
+  @apply min-h-screen w-64 bg-gradient-to-b from-primary to-primary-light text-white shadow-xl;
+  transition: width 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    width: 64px;
+  }
+  
+  .sidebar-container:hover {
+    width: 256px;
+  }
+
+  .sidebar-container span {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .sidebar-container:hover span {
+    opacity: 1;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  @apply fixed inset-0 bg-black bg-opacity-50;
+}
+
+/* Form inputs */
+.form-input {
+  @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md;
 }

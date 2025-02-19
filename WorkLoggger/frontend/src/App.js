@@ -1,19 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Login from './components/Login';
-import Home from './components/Home';
+import { useSelector } from 'react-redux';
 import './App.css';
+import Home from './components/Home';
 
 function App() {
-  const { user } = useSelector(state => state.auth);
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
   return (
     <Router>
       <div className="app-container">
         <Routes>
-          <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-          <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+          <Route
+            path="/login"
+            element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
+          />
+          <Route path="/*" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>
