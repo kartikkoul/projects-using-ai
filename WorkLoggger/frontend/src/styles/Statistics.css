@@ -1,0 +1,178 @@
+.statistics-container {
+  padding: 20px;
+  background-color: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statistics-user-card {
+  background-color: #081e36;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 400px;  /* increased from 300px */
+  cursor: pointer;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.statistics-user-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.statistics-chart-section {
+  height: 200px;
+  padding: 20px;
+}
+
+.statistics-user-details {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  margin-bottom: 20px;  /* added margin for better spacing */
+}
+
+.statistics-user-details h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.statistics-user-details p {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.statistics-user-details span {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.statistics-total-work-items {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  background: var(--hover-bg);
+}
+
+.statistics-total-work-items h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.statistics-total-work-items p {
+  margin: 5px 0 0;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.statistics-user-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.statistics-chart-container {
+  width: 100%;
+  height: max-content;  /* increased from 200px */
+  margin: 20px 0;
+  padding: 10px;
+}
+
+.statistics-chart-container canvas {
+  border-radius: 8px;
+  height: 100%;
+}
+
+.statistics-filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.statistics-filter-input, .statistics-filter-select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.statistics-filter-input {
+  flex: 1;
+}
+
+.statistics-sort-direction-toggle {
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.statistics-sort-direction-toggle:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.statistics-sort-direction-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.statistics-sort-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-analysis-section {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.ai-analysis-section h3 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #081e36;
+}
+
+.ai-analysis-section p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+}

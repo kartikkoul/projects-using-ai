@@ -22,6 +22,11 @@ body {
 
 input, button {
   font-family: inherit;
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
 }
 
 .sidebar-container {

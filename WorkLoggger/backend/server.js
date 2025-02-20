@@ -5,9 +5,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 const categoryRoutes = require('./routes/categories');
 const workItemRoutes = require('./routes/workItems');
 const publicRoutes = require('./routes/public');
+const aiRoutes = require('./routes/ai');
 
 const app = express();
 
@@ -35,8 +37,10 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/worklogger', {
 // Routes
 app.use('/api/public', publicRoutes);  // Add this before protected routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/workitems', workItemRoutes);
+app.use('/api/ai', aiRoutes);  // Add the AI route
 
 // Remove the existing favicon handler and add this instead
 app.use(express.static(path.join(__dirname, 'public')));

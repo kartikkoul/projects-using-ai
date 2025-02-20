@@ -65,10 +65,12 @@ router.post('/', [auth, validateWorkItem], async (req, res) => {
       description: req.body.description,
       category: req.body.category,
       user: req.user.userId,
-      subItems: req.body.subItems,
+      subItems: req.body.subItems || [], // Ensure subItems is an array
       startDate: req.body.startDate,
       endDate: req.body.endDate
     });
+
+
 
     const workItem = await newWorkItem.save();
     await workItem.populate('category', 'name');
@@ -94,14 +96,12 @@ router.put('/:id', [auth, validateWorkItem], async (req, res) => {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
+
     const updateData = {
       title: req.body.title,
       description: req.body.description,
-      category: req.body.category,
       isCompleted: req.body.isCompleted,
-      subItems: req.body.subItems,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
+      endDate: req.body.isCompleted && workItem.subItems.length > 0 ? workItem.subItems[workItem.subItems.length - 1].createdAt : workItem.endDate,
       updatedAt: Date.now()
     };
 
@@ -110,6 +110,7 @@ router.put('/:id', [auth, validateWorkItem], async (req, res) => {
       updateData,
       { new: true }
     ).populate('category', 'name');
+
 
     res.json(workItem);
   } catch (err) {
@@ -192,10 +193,10 @@ router.delete('/:id/subitems/:subItemId', auth, async (req, res) => {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
-    const subItem = workItem.subItems.id(req.params.subItemId);
-    if (!subItem) return res.status(404).json({ msg: 'Sub-item not found' });
+    const subItemIndex = workItem.subItems.findIndex(subItem => subItem._id.toString() === req.params.subItemId);
+    if (subItemIndex === -1) return res.status(404).json({ msg: 'Sub-item not found' });
 
-    subItem.remove();
+    workItem.subItems.splice(subItemIndex, 1);
     await workItem.save();
     await workItem.populate('category', 'name');
 

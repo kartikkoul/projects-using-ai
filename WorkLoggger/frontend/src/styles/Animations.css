@@ -67,3 +67,23 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* Add custom scrollbar styles */
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--content-bg);
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--content-bg);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  border: 2px solid var(--content-bg);
+}

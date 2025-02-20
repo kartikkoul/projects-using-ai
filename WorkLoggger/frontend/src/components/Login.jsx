@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await dispatch(loginUser(credentials)).unwrap();
-      // Navigation will be handled by the protected route
+      navigate('/');
     } catch (err) {
       console.error('Login failed:', err);
     }

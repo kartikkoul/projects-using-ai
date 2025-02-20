@@ -7,15 +7,64 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
   const [showSubItemForm, setShowSubItemForm] = useState(false);
   const [subItemText, setSubItemText] = useState('');
   const [editingSubItem, setEditingSubItem] = useState(null);
+  const [isDeleteSubItemModalOpen, setIsDeleteSubItemModalOpen] = useState(false);
+  const [subItemToDelete, setSubItemToDelete] = useState(null);
 
-  const formatDateTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
+  const getDateRange = (item) => {
+    const startDate = new Date(item.startDate);
+    let endDate;
+
+    if (item.subItems && item.subItems.length > 0) {
+      // Get the date of the latest subitem
+      const latestSubItem = item.subItems[item.subItems.length - 1];
+      endDate = new Date(latestSubItem.createdAt);
+    } else {
+      endDate = new Date(item.updatedAt);
+    }
+
+    return {
+      start: formatDateTime(startDate),
+      end: formatDateTime(endDate),
+      isOngoing: !item.isCompleted
+    };
+  };
+
+  const formatDateTime = (date) => {
+    return new Date(date).toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
+    });
+  };
+
+  const formatSubItemDate = (date) => {
+    const now = new Date();
+    const itemDate = new Date(date);
+    const diffInHours = Math.floor((now - itemDate) / (1000 * 60 * 60));
+    
+    if (diffInHours < 24) {
+      if (diffInHours < 1) {
+        const diffInMinutes = Math.floor((now - itemDate) / (1000 * 60));
+        return `${diffInMinutes} min${diffInMinutes !== 1 ? 's' : ''} ago`;
+      }
+      return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+    }
+    
+    if (itemDate.getFullYear() === now.getFullYear()) {
+      return itemDate.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+    }
+    
+    return itemDate.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
 
@@ -50,14 +99,14 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
     }
   };
 
-  const handleDeleteSubItem = async (subItemId) => {
-    if (window.confirm('Are you sure you want to delete this update?')) {
-      try {
-        const updatedWorkItem = await workItemService.deleteSubItem(item._id, subItemId);
-        onUpdate(updatedWorkItem);
-      } catch (error) {
-        console.error('Error deleting sub-item:', error);
-      }
+  const handleDeleteSubItem = async () => {
+    try {
+      const updatedWorkItem = await workItemService.deleteSubItem(item._id, subItemToDelete._id);
+      onUpdate(updatedWorkItem);
+      setIsDeleteSubItemModalOpen(false);
+      setSubItemToDelete(null);
+    } catch (error) {
+      console.error('Error deleting sub-item:', error);
     }
   };
 
@@ -74,7 +123,19 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
           <div className="work-item-expand">
             <ChevronRightIcon className="h-4 w-4" />
           </div>
-          <h3 className="work-item-title">{item.title}</h3>
+          <div className="work-item-info">
+            <h3 className="work-item-title">{item.title}</h3>
+            <div className="work-item-dates">
+              {(() => {
+                const { start, end, isOngoing } = getDateRange(item);
+                return (
+                  <span className="work-item-date-range">
+                    {start} {isOngoing ? ' - Ongoing' : ` - ${end}`}
+                  </span>
+                );
+              })()}
+            </div>
+          </div>
           <span className={`work-item-status ${item.isCompleted ? 'completed' : 'pending'}`}>
             {item.isCompleted ? 'Completed' : 'In Progress'}
           </span>
@@ -86,6 +147,7 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
               onEdit(item); 
             }} 
             className="action-button edit-button"
+            style={{ cursor: 'pointer', color: '#3b82f6' }} /* Ensure the icon color is more visible */
           >
             <PencilIcon className="h-4 w-4" />
           </button>
@@ -95,6 +157,7 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
               onDelete(item); 
             }} 
             className="action-button delete-button"
+            style={{ cursor: 'pointer' }}
           >
             <TrashIcon className="h-4 w-4" />
           </button>
@@ -111,7 +174,7 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
             <div key={subItem._id} className="subitem">
               <div className="subitem-header">
                 <span className="subitem-date">
-                  {formatDateTime(subItem.createdAt)}
+                  {formatSubItemDate(subItem.createdAt)}
                 </span>
                 <div className="subitem-actions">
                   <button
@@ -121,12 +184,17 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
                       setShowSubItemForm(true);
                     }}
                     className="action-button edit-button"
+                    style={{ cursor: 'pointer', color: '#3b82f6' }} /* Ensure the icon color is more visible */
                   >
                     <PencilIcon className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => handleDeleteSubItem(subItem._id)}
+                    onClick={() => {
+                      setSubItemToDelete(subItem);
+                      setIsDeleteSubItemModalOpen(true);
+                    }}
                     className="action-button delete-button"
+                    style={{ cursor: 'pointer' }}
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>
@@ -145,6 +213,7 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
               setSubItemText('');
             }}
             className="add-subitem-button"
+            style={{ cursor: 'pointer' }}
           >
             <PlusIcon className="h-4 w-4 inline-block mr-1" />
             Add Update
@@ -178,16 +247,49 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
                   setSubItemText('');
                 }} 
                 className="button button-secondary"
+                style={{ cursor: 'pointer' }}
               >
                 Cancel
               </button>
-              <button type="submit" className="button button-primary">
+              <button type="submit" className="button button-primary" style={{ cursor: 'pointer' }}>
                 {editingSubItem ? 'Save' : 'Add'}
               </button>
             </div>
           </form>
         )}
       </div>
+
+      {isDeleteSubItemModalOpen && (
+        <div className="modal-overlay">
+          <div className="delete-modal-container">
+            <h3 className="delete-modal-title">Delete Sub-Item</h3>
+            <p className="delete-modal-message">
+              Are you sure you want to delete this sub-item?
+            </p>
+            <div className="delete-modal-actions">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsDeleteSubItemModalOpen(false);
+                  setSubItemToDelete(null);
+                }}
+                className="button button-secondary"
+                style={{ cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteSubItem}
+                className="button button-delete"
+                style={{ cursor: 'pointer' }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

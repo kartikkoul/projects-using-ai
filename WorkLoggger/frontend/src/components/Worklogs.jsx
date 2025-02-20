@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { categoryService } from '../services/categoryService';
 import { workItemService } from '../services/workItemService';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import WorkItemsList from './WorkItemsList';
+import WorkItem from './WorkItem';
 import '../styles/Worklogs.css';
 
 const Worklogs = () => {
@@ -25,11 +25,10 @@ const Worklogs = () => {
     description: '',
     isCompleted: false
   });
-  const [workItemsByCategory, setWorkItemsByCategory] = useState({});
 
   useEffect(() => {
     fetchCategories();
-    fetchAllWorkItems();
+    fetchCategoryCounts();
   }, []);
 
   const fetchCategories = async () => {
@@ -41,30 +40,17 @@ const Worklogs = () => {
     }
   };
 
-  const fetchAllWorkItems = async () => {
+  const fetchCategoryCounts = async () => {
     try {
-      const data = await workItemService.getAllWorkItems();
-      const itemsByCategory = data.reduce((acc, item) => {
-        const categoryId = item.category._id;
-        if (!acc[categoryId]) {
-          acc[categoryId] = [];
-        }
-        acc[categoryId].push(item);
+      const workItems = await workItemService.getAllWorkItems();
+      const counts = workItems.reduce((acc, item) => {
+        acc[item.category._id] = (acc[item.category._id] || 0) + 1;
         return acc;
       }, {});
-      setWorkItemsByCategory(itemsByCategory);
-      updateCategoryCounts(itemsByCategory);
+      setCategoryCounts(counts);
     } catch (error) {
-      console.error('Error fetching work items:', error);
+      console.error('Error fetching category counts:', error);
     }
-  };
-
-  const updateCategoryCounts = (itemsByCategory) => {
-    const counts = Object.entries(itemsByCategory).reduce((acc, [categoryId, items]) => {
-      acc[categoryId] = items?.length || 0;
-      return acc;
-    }, {});
-    setCategoryCounts(counts);
   };
 
   const handleSubmit = async (e) => {
@@ -110,17 +96,14 @@ const Worklogs = () => {
     try {
       const data = await workItemService.getWorkItemsByCategory(categoryId);
       setWorkItems(data);
-      const newWorkItemsByCategory = { ...workItemsByCategory };
-      newWorkItemsByCategory[categoryId] = data;
-      setWorkItemsByCategory(newWorkItemsByCategory);
     } catch (error) {
       console.error('Error fetching work items:', error);
     }
   };
 
-  const handleCategoryClick = async (category) => {
+  const handleCategoryClick = (category) => {
     setSelectedCategory(category);
-    await fetchWorkItems(category._id);
+    fetchWorkItems(category._id);
   };
 
   const handleWorkItemSubmit = async (e) => {
@@ -131,35 +114,19 @@ const Worklogs = () => {
         category: selectedCategory._id
       };
 
-      let updatedItem;
       if (editingWorkItem) {
-        updatedItem = await workItemService.updateWorkItem(editingWorkItem._id, itemData);
+        await workItemService.updateWorkItem(editingWorkItem._id, itemData);
       } else {
-        updatedItem = await workItemService.createWorkItem(itemData);
+        await workItemService.createWorkItem(itemData);
+        setCategoryCounts(prevCounts => ({
+          ...prevCounts,
+          [selectedCategory._id]: (prevCounts[selectedCategory._id] || 0) + 1
+        }));
       }
-
-      // Update workItemsByCategory and counts
-      const newWorkItemsByCategory = { ...workItemsByCategory };
-      const categoryId = selectedCategory._id;
-      
-      if (!newWorkItemsByCategory[categoryId]) {
-        newWorkItemsByCategory[categoryId] = [];
-      }
-
-      if (editingWorkItem) {
-        newWorkItemsByCategory[categoryId] = newWorkItemsByCategory[categoryId].map(item =>
-          item._id === updatedItem._id ? updatedItem : item
-        );
-      } else {
-        newWorkItemsByCategory[categoryId].push(updatedItem);
-      }
-
-      setWorkItemsByCategory(newWorkItemsByCategory);
-      updateCategoryCounts(newWorkItemsByCategory);
-      
       setIsWorkItemModalOpen(false);
       setEditingWorkItem(null);
       setWorkItemFormData({ title: '', description: '', isCompleted: false });
+      fetchWorkItems(selectedCategory._id);
     } catch (error) {
       console.error('Error saving work item:', error);
     }
@@ -168,42 +135,15 @@ const Worklogs = () => {
   const handleWorkItemDelete = async () => {
     try {
       await workItemService.deleteWorkItem(workItemToDelete._id);
-      
-      // Update workItemsByCategory and counts
-      const newWorkItemsByCategory = { ...workItemsByCategory };
-      const categoryId = selectedCategory._id;
-      
-      newWorkItemsByCategory[categoryId] = newWorkItemsByCategory[categoryId].filter(
-        item => item._id !== workItemToDelete._id
-      );
-      
-      setWorkItemsByCategory(newWorkItemsByCategory);
-      updateCategoryCounts(newWorkItemsByCategory);
-
       setIsDeleteWorkItemModalOpen(false);
       setWorkItemToDelete(null);
+      setCategoryCounts(prevCounts => ({
+        ...prevCounts,
+        [selectedCategory._id]: prevCounts[selectedCategory._id] - 1
+      }));
+      fetchWorkItems(selectedCategory._id);
     } catch (error) {
       console.error('Error deleting work item:', error);
-    }
-  };
-
-  const handleAddWorkItem = (categoryId) => {
-    const category = categories.find(c => c._id === categoryId);
-    setSelectedCategory(category);
-    setEditingWorkItem(null);
-    setWorkItemFormData({ title: '', description: '', isCompleted: false });
-    setIsWorkItemModalOpen(true);
-  };
-
-  const handleWorkItemUpdate = async (updatedItem) => {
-    const newWorkItems = { ...workItemsByCategory };
-    const categoryId = updatedItem.category._id;
-    
-    if (newWorkItems[categoryId]) {
-      newWorkItems[categoryId] = newWorkItems[categoryId].map(item =>
-        item._id === updatedItem._id ? updatedItem : item
-      );
-      setWorkItemsByCategory(newWorkItems);
     }
   };
 
@@ -268,36 +208,46 @@ const Worklogs = () => {
         </div>
       </nav>
 
-      <div className="work-items-container">
-        {selectedCategory ? (
-          <WorkItemsList
-            key={selectedCategory._id}
-            category={selectedCategory}
-            workItems={workItemsByCategory[selectedCategory._id] || []}
-            onAddItem={handleAddWorkItem}
-            onEditItem={(item) => {
-              setSelectedCategory(selectedCategory);
-              setEditingWorkItem(item);
-              setWorkItemFormData({
-                title: item.title,
-                description: item.description,
-                isCompleted: item.isCompleted
-              });
-              setIsWorkItemModalOpen(true);
-            }}
-            onDeleteItem={(item) => {
-              setSelectedCategory(selectedCategory);
-              setWorkItemToDelete(item);
-              setIsDeleteWorkItemModalOpen(true);
-            }}
-            onUpdateItem={handleWorkItemUpdate}
-          />
-        ) : (
-          <div className="no-selection-message">
-            Please select a category to view work items
+      {selectedCategory && (
+        <div className="work-items-section">
+          <div className="work-items-header">
+            <h2 className="work-items-title">{selectedCategory.name}</h2>
+            <button
+              onClick={() => {
+                setEditingWorkItem(null);
+                setWorkItemFormData({ title: '', description: '', isCompleted: false });
+                setIsWorkItemModalOpen(true);
+              }}
+              className="add-work-item-button"
+            >
+              <PlusIcon className="h-4 w-4 mr-1" />
+              Add Work Item
+            </button>
           </div>
-        )}
-      </div>
+
+          <div className="work-items-list">
+            {workItems.map(item => (
+              <WorkItem
+                key={item._id}
+                item={item}
+                onEdit={(item) => {
+                  setEditingWorkItem(item);
+                  setWorkItemFormData({
+                    title: item.title,
+                    description: item.description,
+                    isCompleted: item.isCompleted
+                  });
+                  setIsWorkItemModalOpen(true);
+                }}
+                onDelete={(item) => {
+                  setWorkItemToDelete(item);
+                  setIsDeleteWorkItemModalOpen(true);
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="modal-overlay">

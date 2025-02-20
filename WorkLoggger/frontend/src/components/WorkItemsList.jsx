@@ -11,7 +11,7 @@ const WorkItemsList = ({
   onUpdateItem 
 }) => {
   return (
-    <div className="work-items-section">
+    <div className="work-items-section" style={{"--delay": 1}}>
       <div className="work-items-header">
         <h2 className="work-items-title">
           {category.description}
@@ -26,13 +26,14 @@ const WorkItemsList = ({
       </div>
 
       <div className="work-items-list">
-        {workItems.map(item => (
+        {workItems.map((item, index) => (
           <WorkItem
             key={item._id}
             item={item}
             onEdit={onEditItem}
             onDelete={onDeleteItem}
             onUpdate={onUpdateItem}
+            style={{"--index": index}}
           />
         ))}
       </div>

@@ -24,6 +24,22 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   z-index: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--content-bg);
+}
+
+.login-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.login-container::-webkit-scrollbar-track {
+  background: var(--content-bg);
+}
+
+.login-container::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  border: 2px solid var(--content-bg);
 }
 
 .brand-section {

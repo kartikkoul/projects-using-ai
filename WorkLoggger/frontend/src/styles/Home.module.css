@@ -8,6 +8,22 @@
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--content-bg);
+}
+
+.mainContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mainContent::-webkit-scrollbar-track {
+  background: var(--content-bg);
+}
+
+.mainContent::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  border: 2px solid var(--content-bg);
 }
 
 .welcomeCard {

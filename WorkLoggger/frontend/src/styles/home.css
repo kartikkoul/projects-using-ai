@@ -4,6 +4,22 @@
   position: relative;
   display: flex;
   justify-content: flex-end;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--content-bg);
+}
+
+.home-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.home-container::-webkit-scrollbar-track {
+  background: var(--content-bg);
+}
+
+.home-container::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  border: 2px solid var(--content-bg);
 }
 
 main{

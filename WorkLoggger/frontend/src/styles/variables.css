@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #3b82f6;
+  --primary-color: linear-gradient(to right, #0c2b4d, #081e36);
   --primary-hover: #2563eb;
   --danger-color: #ef4444;
   --danger-hover: rgba(239, 68, 68, 0.1);
