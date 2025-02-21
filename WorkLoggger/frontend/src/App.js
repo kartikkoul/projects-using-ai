@@ -7,6 +7,7 @@ import Home from './components/Home';
 import './App.css';
 import UserDetails from './components/UserDetails';
 import AdminPanel from './components/AdminPanel';
+import Loader from './components/Loader';
 
 function App() {
   const dispatch = useDispatch();
@@ -20,7 +21,11 @@ function App() {
   }, [isAuthenticated, dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loader-container">
+        <Loader />
+      </div>
+    );
   }
 
   return (

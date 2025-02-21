@@ -325,7 +325,10 @@ const UserDetails = () => {
                             <h4>{item.title}</h4>
                           </div>
                           <div className="item-dates">
-                            <span>{formatDateTime(item.startDate)} - {item.endDate ? formatDateTime(item.endDate) : 'Ongoing'}</span>
+                            <span>
+                              {formatDateTime(item.startDate)} 
+                              {item.isCompleted && !item.endDate ? '' : ` - ${item.endDate ? formatDateTime(item.endDate) : 'Ongoing'}`}
+                            </span>
                           </div>
                           <div className={`item-status ${item.isCompleted ? '' : 'in-progress'}`}>
                             {item.isCompleted ? 'Completed' : 'In Progress'}

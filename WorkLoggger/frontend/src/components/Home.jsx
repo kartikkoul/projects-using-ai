@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Statistics from './Statistics';
 import Worklogs from './Worklogs';
@@ -14,7 +14,8 @@ const Home = () => {
       <Sidebar />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Statistics />} />
+          <Route path="/"  element={<Navigate to="/worklogs"/>} />
+          <Route path="/statistics" element={<Statistics />} />
           <Route path="/worklogs" element={<Worklogs />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/user/:userId" element={<UserDetails />} />

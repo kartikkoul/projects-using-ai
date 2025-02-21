@@ -12,7 +12,7 @@ module.exports = async(req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     
-    const user = await User.findOne({ _id: decoded.userId });
+    const user = await User.findOne({ _id: decoded.userId }).select('-password');;
     if(!user){
       throw Error("Such user does not exist!!");
     }

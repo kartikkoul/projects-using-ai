@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PencilIcon, TrashIcon, ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { workItemService } from '../services/workItemService';
 
@@ -9,6 +9,22 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
   const [editingSubItem, setEditingSubItem] = useState(null);
   const [isDeleteSubItemModalOpen, setIsDeleteSubItemModalOpen] = useState(false);
   const [subItemToDelete, setSubItemToDelete] = useState(null);
+  const subItemFormRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (subItemFormRef.current && !subItemFormRef.current.contains(event.target)) {
+        setShowSubItemForm(false);
+        setEditingSubItem(null);
+        setSubItemText('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const getDateRange = (item) => {
     const startDate = new Date(item.startDate);
@@ -168,42 +184,6 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
         {item.description && (
           <p className="work-item-description">{item.description}</p>
         )}
-        
-        <div className="subitems-list">
-          {item.subItems?.map((subItem) => (
-            <div key={subItem._id} className="subitem">
-              <div className="subitem-header">
-                <span className="subitem-date">
-                  {formatSubItemDate(subItem.createdAt)}
-                </span>
-                <div className="subitem-actions">
-                  <button
-                    onClick={() => {
-                      setEditingSubItem(subItem);
-                      setSubItemText(subItem.description);
-                      setShowSubItemForm(true);
-                    }}
-                    className="action-button edit-button"
-                    style={{ cursor: 'pointer', color: '#3b82f6' }} /* Ensure the icon color is more visible */
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSubItemToDelete(subItem);
-                      setIsDeleteSubItemModalOpen(true);
-                    }}
-                    className="action-button delete-button"
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <TrashIcon className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-              <p>{subItem.description}</p>
-            </div>
-          ))}
-        </div>
 
         {!showSubItemForm ? (
           <button
@@ -229,6 +209,7 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
               }
             }} 
             className="subitem-form"
+            ref={subItemFormRef}
           >
             <input
               type="text"
@@ -257,6 +238,63 @@ const WorkItem = ({ item, onEdit, onDelete, onUpdate }) => {
             </div>
           </form>
         )}
+        
+        <div className="subitems-list">
+          {item.subItems?.map((subItem) => (
+            <div key={subItem._id} className="subitem">
+              <div className="subitem-header">
+                <span className="subitem-date">
+                  {formatSubItemDate(subItem.createdAt)}
+                </span>
+                <div className="subitem-actions">
+                  <button
+                    onClick={() => {
+                      setEditingSubItem(subItem);
+                      setSubItemText(subItem.description);
+                    }}
+                    className="action-button edit-button"
+                    style={{ cursor: 'pointer', color: '#3b82f6' }}
+                  >
+                    <PencilIcon className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSubItemToDelete(subItem);
+                      setIsDeleteSubItemModalOpen(true);
+                    }}
+                    className="action-button delete-button"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <TrashIcon className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+              {editingSubItem?._id === subItem._id ? (
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleEditSubItem(subItem);
+                  }} 
+                  className="subitem-form"
+                  ref={subItemFormRef}
+                >
+                  <input
+                    type="text"
+                    value={subItemText}
+                    onChange={(e) => setSubItemText(e.target.value)}
+                    className="form-input"
+                    required
+                  />
+                  <button type="submit" className="button button-primary" style={{ cursor: 'pointer' }}>
+                    Save
+                  </button>
+                </form>
+              ) : (
+                <p>{subItem.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {isDeleteSubItemModalOpen && (

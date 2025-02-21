@@ -147,6 +147,12 @@ const Worklogs = () => {
     }
   };
 
+  const handleWorkItemUpdate = (updatedItem) => {
+    setWorkItems(prevItems => prevItems.map(item =>
+      item._id === updatedItem._id ? updatedItem : item
+    ));
+  };
+
   return (
     <div className="workLogsContainer">
       <nav className="categories-nav">
@@ -243,6 +249,7 @@ const Worklogs = () => {
                   setWorkItemToDelete(item);
                   setIsDeleteWorkItemModalOpen(true);
                 }}
+                onUpdate={handleWorkItemUpdate}
               />
             ))}
           </div>

@@ -257,6 +257,7 @@ const AdminPanel = () => {
             <div className="modal-overlay" onClick={handleCloseModal}>
               <div className="confirmation-modal-container">
                 <h3 className="confirmation-modal-title">Confirm Deletion</h3>
+                <p className="confirmation-modal-warning">This action cannot be undone. Are you sure you want to delete this user?</p>
                 <div className="confirmation-modal-actions">
                   <button
                     onClick={() => setIsDeleteConfirmationModalOpen(false)}

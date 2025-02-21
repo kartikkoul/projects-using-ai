@@ -65,7 +65,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  width: 150px; /* Set a fixed width for uniform button size */
+  min-width: 150px; /* Set a fixed width for uniform button size */
+  width: max-content;
   cursor: pointer;
 }
 
@@ -173,7 +174,7 @@
   visibility: hidden;
   transform: translateY(10px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000; /* Ensure it's above other elements */
+  z-index: 2000; /* Ensure it's above other elements */
   min-width: max-content; /* Ensure it doesn't shrink smaller than content */
 }
 
@@ -551,11 +552,12 @@
   border: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.add-work-item-button svg{
-  height: 2rem;
+  margin-bottom: 1rem; /* Add margin to separate from the list */
 }
 
+.add-work-item-button svg {
+  height: 2rem;
+}
 
 .work-items-list {
   display: flex;

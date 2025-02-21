@@ -5,6 +5,13 @@
   background-color: #f3f4f6;
 }
 
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .login-page {
   min-height: 100vh;
   display: flex;

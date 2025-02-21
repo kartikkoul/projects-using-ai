@@ -203,6 +203,11 @@
   color: #081e36;
 }
 
+.confirmation-modal-warning {
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
 .confirmation-modal-actions {
   display: flex;
   justify-content: flex-end;

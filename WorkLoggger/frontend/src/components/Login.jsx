@@ -113,7 +113,7 @@ const Login = () => {
             <span className="brand-dot">.</span>
           </h1>
           <p className="brand-subtitle">
-            Track Your Progress, Showcase Your Journey
+            Log Your Work, Showcase Your Work
           </p>
         </motion.div>
 

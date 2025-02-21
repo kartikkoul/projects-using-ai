@@ -64,6 +64,7 @@ router.post('/', [auth, validateWorkItem], async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       category: req.body.category,
+      isCompleted: req.body.isCompleted,
       user: req.user.userId,
       subItems: req.body.subItems || [], // Ensure subItems is an array
       startDate: req.body.startDate,

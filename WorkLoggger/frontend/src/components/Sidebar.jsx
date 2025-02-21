@@ -20,7 +20,7 @@ const Sidebar = () => {
   const [newPassword, setNewPassword] = useState('');
 
   const navItems = [
-    { name: 'Global Worklogs', icon: ChartBarIcon, path: '/' },
+    { name: 'Global Worklogs', icon: ChartBarIcon, path: '/statistics' },
     { name: 'My Worklogs', icon: ClipboardDocumentListIcon, path: '/worklogs' },
     ...(isAdmin ? [{ name: 'Admin Panel', icon: UserGroupIcon, path: '/admin' }] : []),
   ];

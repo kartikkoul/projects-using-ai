@@ -41,10 +41,13 @@ router.post('/users', [auth, admin, validateUser], async (req, res) => {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     user = new User({
       name,
       email,
-      password
+      password: hashedPassword
     });
 
     await user.save();
