@@ -18,7 +18,7 @@ export const loginUser = createAsyncThunk(
       const response = await axios.post('http://localhost:5000/api/auth/login', credentials);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data.message || 'Login failed');
+      return rejectWithValue(error.response.data.message || 'Login failed'); 
     }
   }
 );
