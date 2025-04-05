@@ -26,7 +26,7 @@ function App() {
         <Loader />
       </div>
     );
-  }
+  } 
 
   return (
     <Router>
