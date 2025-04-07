@@ -25,7 +25,7 @@ function App() {
       <div className="loader-container">
         <Loader />
       </div>
-    );
+    ); 
   } 
 
   return (
