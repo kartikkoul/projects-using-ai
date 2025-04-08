@@ -26,13 +26,13 @@ function App() {
         <Loader />
       </div>
     );
-  } 
+  }  
 
   return (
     <Router>
       <div className="app-container"> 
         <Routes>
-          <Route
+          <Route 
             path="/login"
             element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
           />
